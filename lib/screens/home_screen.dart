@@ -56,8 +56,16 @@ class _ExpenseTrackerHomeState extends State<ExpenseTrackerHome> {
       ..sort((a, b) => b.date.compareTo(a.date));
   }
 
-  double _getTotalExpense() {
-    return _getFilteredExpenses()
+  double _getTotalIncome({List<Expense>? expenses}) {
+    final list = expenses ?? _expenses;
+    return list
+        .where((e) => e.type == ExpenseType.income)
+        .fold(0, (sum, item) => sum + item.amount);
+  }
+
+  double _getTotalExpense({List<Expense>? expenses}) {
+    final list = expenses ?? _getFilteredExpenses();
+    return list
         .where((e) => e.type == ExpenseType.expense)
         .fold(0, (sum, item) => sum + item.amount);
   }
@@ -65,13 +73,7 @@ class _ExpenseTrackerHomeState extends State<ExpenseTrackerHome> {
   void _addExpense(Expense expense) {
     setState(() {
       _expenses.add(expense);
-      if (expense.type == ExpenseType.income) {
-        final currentSalary = widget.settings.monthlySalary ?? 0.0;
-        final newSalary = currentSalary + expense.amount;
-        widget.settings.monthlySalary = newSalary;
-        StorageService.saveSettings(widget.settings);
-        widget.onUpdateSettings(widget.settings);
-      }
+      // Income is now calculated dynamically from transactions, not stored in settings
     });
     StorageService.saveExpenses(_expenses);
   }
@@ -129,7 +131,20 @@ class _ExpenseTrackerHomeState extends State<ExpenseTrackerHome> {
   @override
   Widget build(BuildContext context) {
     final filteredExpenses = _getFilteredExpenses();
-    final total = _getTotalExpense();
+    final totalSpentFiltered = _getTotalExpense(expenses: filteredExpenses);
+    final totalIncomeFiltered = _getTotalIncome(expenses: filteredExpenses);
+
+    // Calculate All-Time Balance
+    final allTimeIncome = _getTotalIncome(expenses: _expenses);
+    final allTimeSpent = _getTotalExpense(expenses: _expenses);
+    double balance =
+        (widget.settings.monthlySalary ?? 0) + allTimeIncome - allTimeSpent;
+    if (balance > 99999999) balance = 99999999;
+
+    String displayName = widget.settings.userName.split(' ')[0];
+    if (displayName.length > 8) {
+      displayName = displayName.substring(0, 8);
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -182,7 +197,7 @@ class _ExpenseTrackerHomeState extends State<ExpenseTrackerHome> {
                                 ),
                               ),
                               Text(
-                                widget.settings.userName.split(' ')[0],
+                                displayName,
                                 style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
@@ -207,7 +222,7 @@ class _ExpenseTrackerHomeState extends State<ExpenseTrackerHome> {
                                 ),
                               ),
                               Text(
-                                '${widget.settings.currencySymbol}${((widget.settings.monthlySalary ?? 0) - total).toStringAsFixed(2)}',
+                                '${balance.toStringAsFixed(2)}',
                                 style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
@@ -253,8 +268,8 @@ class _ExpenseTrackerHomeState extends State<ExpenseTrackerHome> {
 
                 // Summary Card
                 SummaryCard(
-                  totalSpent: total,
-                  income: widget.settings.monthlySalary ?? 5000.0,
+                  totalSpent: totalSpentFiltered,
+                  income: totalIncomeFiltered,
                   currencySymbol: widget.settings.currencySymbol,
                 ),
 

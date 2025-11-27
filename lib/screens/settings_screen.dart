@@ -332,6 +332,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   if (double.parse(value) <= 0) {
                                     return 'Budget must be greater than 0';
                                   }
+                                  if (double.parse(value) > 999999999) {
+                                    return 'Budget cannot exceed 999,999,999';
+                                  }
                                 }
                                 return null;
                               },
