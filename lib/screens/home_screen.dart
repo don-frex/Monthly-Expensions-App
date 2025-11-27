@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../models.dart';
 import '../widgets.dart';
 import '../screens.dart';
@@ -56,12 +57,21 @@ class _ExpenseTrackerHomeState extends State<ExpenseTrackerHome> {
   }
 
   double _getTotalExpense() {
-    return _getFilteredExpenses().fold(0, (sum, item) => sum + item.amount);
+    return _getFilteredExpenses()
+        .where((e) => e.type == ExpenseType.expense)
+        .fold(0, (sum, item) => sum + item.amount);
   }
 
   void _addExpense(Expense expense) {
     setState(() {
       _expenses.add(expense);
+      if (expense.type == ExpenseType.income) {
+        final currentSalary = widget.settings.monthlySalary ?? 0.0;
+        final newSalary = currentSalary + expense.amount;
+        widget.settings.monthlySalary = newSalary;
+        StorageService.saveSettings(widget.settings);
+        widget.onUpdateSettings(widget.settings);
+      }
     });
     StorageService.saveExpenses(_expenses);
   }
@@ -134,24 +144,48 @@ class _ExpenseTrackerHomeState extends State<ExpenseTrackerHome> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
-                          Text(
-                            'Hello,',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.w500,
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: SvgPicture.asset(
+                              widget.settings.getAvatarAsset(),
                             ),
                           ),
-                          Text(
-                            widget.settings.userName.split(' ')[0],
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF2D3436),
-                            ),
+                          const SizedBox(width: 16),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Hello,',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey[600],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                widget.settings.userName.split(' ')[0],
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2D3436),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

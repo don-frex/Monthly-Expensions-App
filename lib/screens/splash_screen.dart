@@ -26,17 +26,18 @@ class SplashScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(40), // Softer corners
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFB4E50D)
+                    color: Theme.of(context)
+                        .primaryColor
                         .withOpacity(0.3), // Pastel Green Shadow
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
                 ],
               ),
-              child: const Icon(
+              child: Icon(
                 CupertinoIcons.money_dollar,
                 size: 60,
-                color: Color(0xFFB4E50D), // Pastel Green
+                color: Theme.of(context).primaryColor,
               ),
             ),
             const SizedBox(height: 40),
@@ -72,11 +73,11 @@ class SplashScreen extends StatelessWidget {
                   width: double.infinity,
                   height: 64, // Taller button
                   decoration: BoxDecoration(
-                    color: const Color(0xFFB4E50D), // Pastel Green
+                    color: Theme.of(context).primaryColor, // Pastel Green
                     borderRadius: BorderRadius.circular(24), // Rounded corners
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFB4E50D).withOpacity(0.4),
+                        color: Theme.of(context).primaryColor.withOpacity(0.4),
                         blurRadius: 16,
                         offset: const Offset(0, 8),
                       ),

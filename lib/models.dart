@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'data.dart';
 
 // Data Models
@@ -16,9 +17,13 @@ enum ExpenseCategory {
   other
 }
 
+enum IncomeCategory { salary, passive, gifts, business, other }
+
 enum TimeFilter { today, week, month, all }
 
 enum Gender { male, female }
+
+enum ExpenseType { income, expense }
 
 class Expense {
   final String id;
@@ -26,6 +31,8 @@ class Expense {
   final double amount;
   final DateTime date;
   final ExpenseCategory category;
+  final IncomeCategory? incomeCategory;
+  final ExpenseType type;
 
   Expense({
     required this.id,
@@ -33,6 +40,8 @@ class Expense {
     required this.amount,
     required this.date,
     required this.category,
+    this.incomeCategory,
+    this.type = ExpenseType.expense,
   });
 
   Map<String, dynamic> toJson() {
@@ -42,6 +51,8 @@ class Expense {
       'amount': amount,
       'date': date.toIso8601String(),
       'category': category.index,
+      'incomeCategory': incomeCategory?.index,
+      'type': type.index,
     };
   }
 
@@ -52,6 +63,10 @@ class Expense {
       amount: json['amount'],
       date: DateTime.parse(json['date']),
       category: ExpenseCategory.values[json['category']],
+      incomeCategory: json['incomeCategory'] != null
+          ? IncomeCategory.values[json['incomeCategory']]
+          : null,
+      type: ExpenseType.values[json['type'] ?? 1],
     );
   }
 }
@@ -107,5 +122,11 @@ class UserSettings {
     return gender == Gender.male
         ? 'assets/avatars/male.svg'
         : 'assets/avatars/female.svg';
+  }
+
+  Color get primaryColor {
+    return gender == Gender.male
+        ? const Color(0xFFB4E50D)
+        : const Color(0xFFFFB6C1);
   }
 }

@@ -13,6 +13,9 @@ void main() async {
       statusBarIconBrightness: Brightness.dark,
     ),
   );
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
 
   // Load data
   final expenses = await StorageService.loadExpenses();
@@ -90,7 +93,8 @@ class _ExpenseTrackerAppState extends State<ExpenseTrackerApp> {
       title: 'Masroufy',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: _settings.primaryColor,
+        colorScheme: ColorScheme.fromSeed(seedColor: _settings.primaryColor),
         scaffoldBackgroundColor: const Color(0xFFF5F7FA),
         textTheme: GoogleFonts.poppinsTextTheme(
           Theme.of(context).textTheme,

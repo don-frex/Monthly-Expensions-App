@@ -26,8 +26,10 @@ class AnalyticsScreen extends StatelessWidget {
   Map<ExpenseCategory, double> _calculateCategorySpending() {
     final Map<ExpenseCategory, double> spending = {};
     for (var expense in expenses) {
-      spending[expense.category] =
-          (spending[expense.category] ?? 0) + expense.amount;
+      if (expense.type == ExpenseType.expense) {
+        spending[expense.category] =
+            (spending[expense.category] ?? 0) + expense.amount;
+      }
     }
     return spending;
   }
@@ -299,6 +301,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
+  Color get _primaryColor {
+    return _selectedGender == Gender.male
+        ? const Color(0xFFB4E50D)
+        : const Color(0xFFFFB6C1);
+  }
+
   void _saveOnboarding() {
     if (_formKey.currentState!.validate()) {
       final newSettings = UserSettings(
@@ -327,10 +335,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
               child: Column(
                 children: [
-                  const Icon(
+                  Icon(
                     CupertinoIcons.sparkles,
                     size: 48,
-                    color: Color(0xFFB4E50D),
+                    color: _primaryColor,
                   ),
                   const SizedBox(height: 16),
                   const Text(
@@ -381,12 +389,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 horizontal: 16, vertical: 8),
                             child: TextFormField(
                               controller: _nameController,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'Name',
-                                labelStyle: TextStyle(color: Colors.grey),
+                                labelStyle: const TextStyle(color: Colors.grey),
                                 border: InputBorder.none,
                                 prefixIcon: Icon(CupertinoIcons.person_fill,
-                                    color: Color(0xFFB4E50D)),
+                                    color: _primaryColor),
                               ),
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
@@ -401,15 +409,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             padding: const EdgeInsets.all(16),
                             child: Row(
                               children: [
-                                const Icon(CupertinoIcons.person_2_fill,
-                                    color: Color(0xFFB4E50D)),
+                                Icon(CupertinoIcons.person_2_fill,
+                                    color: _primaryColor),
                                 const SizedBox(width: 12),
                                 const Text('Gender',
                                     style: TextStyle(fontSize: 16)),
                                 const Spacer(),
                                 CupertinoSlidingSegmentedControl<Gender>(
                                   groupValue: _selectedGender,
-                                  thumbColor: const Color(0xFFB4E50D),
+                                  thumbColor: _primaryColor,
                                   backgroundColor: const Color(0xFFF5F7FA),
                                   children: const {
                                     Gender.male: Padding(
@@ -459,13 +467,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 horizontal: 16, vertical: 8),
                             child: DropdownButtonFormField<String>(
                               value: _selectedCurrencyCode,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'Currency',
-                                labelStyle: TextStyle(color: Colors.grey),
+                                labelStyle: const TextStyle(color: Colors.grey),
                                 border: InputBorder.none,
                                 prefixIcon: Icon(
                                     CupertinoIcons.money_dollar_circle_fill,
-                                    color: Color(0xFFB4E50D)),
+                                    color: _primaryColor),
                               ),
                               items: currencyList.map((currency) {
                                 return DropdownMenuItem(
@@ -490,12 +498,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             child: TextFormField(
                               controller: _salaryController,
                               keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'Monthly Budget',
-                                labelStyle: TextStyle(color: Colors.grey),
+                                labelStyle: const TextStyle(color: Colors.grey),
                                 border: InputBorder.none,
                                 prefixIcon: Icon(CupertinoIcons.chart_bar_fill,
-                                    color: Color(0xFFB4E50D)),
+                                    color: _primaryColor),
                               ),
                               validator: (value) {
                                 if (value != null && value.isNotEmpty) {
@@ -522,7 +530,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       child: ElevatedButton(
                         onPressed: _saveOnboarding,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFB4E50D),
+                          backgroundColor: _primaryColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),

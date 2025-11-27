@@ -20,7 +20,9 @@ class AddTransactionScreen extends StatefulWidget {
 class _AddTransactionScreenState extends State<AddTransactionScreen> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
+  ExpenseType _selectedType = ExpenseType.expense;
   ExpenseCategory _selectedCategory = ExpenseCategory.food;
+  IncomeCategory _selectedIncomeCategory = IncomeCategory.salary;
   String _paymentType = 'Cash'; // 'Cash', 'Credit/Debit', 'Check'
   DateTime? _selectedDate;
 
@@ -46,6 +48,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         amount: enteredAmount,
         date: _selectedDate ?? DateTime.now(),
         category: _selectedCategory,
+        incomeCategory: _selectedType == ExpenseType.income
+            ? _selectedIncomeCategory
+            : null,
+        type: _selectedType,
       ),
     );
 
@@ -127,6 +133,36 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  // Transaction Type Selector
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(bottom: 24),
+                    child: CupertinoSlidingSegmentedControl<ExpenseType>(
+                      groupValue: _selectedType,
+                      thumbColor: Theme.of(context).primaryColor,
+                      backgroundColor: const Color(0xFFF5F7FA),
+                      children: const {
+                        ExpenseType.expense: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          child: Text('Expense'),
+                        ),
+                        ExpenseType.income: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          child: Text('Income'),
+                        ),
+                      },
+                      onValueChanged: (ExpenseType? value) {
+                        if (value != null) {
+                          setState(() {
+                            _selectedType = value;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+
                   // Amount Input
                   Center(
                     child: Column(
@@ -168,50 +204,98 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: DropdownButtonHideUnderline(
-                      child: DropdownButton<ExpenseCategory>(
-                        value: _selectedCategory,
-                        isExpanded: true,
-                        icon: const Icon(CupertinoIcons.chevron_down, size: 20),
-                        onChanged: (ExpenseCategory? newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              _selectedCategory = newValue;
-                            });
-                          }
-                        },
-                        items: ExpenseCategory.values.map((category) {
-                          return DropdownMenuItem(
-                            value: category,
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFB4E50D)
-                                        .withOpacity(0.2),
-                                    shape: BoxShape.circle,
+                      child: _selectedType == ExpenseType.expense
+                          ? DropdownButton<ExpenseCategory>(
+                              value: _selectedCategory,
+                              isExpanded: true,
+                              icon: const Icon(CupertinoIcons.chevron_down,
+                                  size: 20),
+                              onChanged: (ExpenseCategory? newValue) {
+                                if (newValue != null) {
+                                  setState(() {
+                                    _selectedCategory = newValue;
+                                  });
+                                }
+                              },
+                              items: ExpenseCategory.values.map((category) {
+                                return DropdownMenuItem(
+                                  value: category,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .primaryColor
+                                              .withOpacity(0.2),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          _getCategoryIcon(category),
+                                          color: Theme.of(context).primaryColor,
+                                          size: 16,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        category.name[0].toUpperCase() +
+                                            category.name.substring(1),
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Color(0xFF2D3436),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  child: Icon(
-                                    _getCategoryIcon(category),
-                                    color: const Color(0xFFB4E50D),
-                                    size: 16,
+                                );
+                              }).toList(),
+                            )
+                          : DropdownButton<IncomeCategory>(
+                              value: _selectedIncomeCategory,
+                              isExpanded: true,
+                              icon: const Icon(CupertinoIcons.chevron_down,
+                                  size: 20),
+                              onChanged: (IncomeCategory? newValue) {
+                                if (newValue != null) {
+                                  setState(() {
+                                    _selectedIncomeCategory = newValue;
+                                  });
+                                }
+                              },
+                              items: IncomeCategory.values.map((category) {
+                                return DropdownMenuItem(
+                                  value: category,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFF4CD964)
+                                              .withOpacity(0.2),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          _getIncomeCategoryIcon(category),
+                                          color: const Color(0xFF4CD964),
+                                          size: 16,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        category.name[0].toUpperCase() +
+                                            category.name.substring(1),
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Color(0xFF2D3436),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  category.name[0].toUpperCase() +
-                                      category.name.substring(1),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Color(0xFF2D3436),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
+                                );
+                              }).toList(),
                             ),
-                          );
-                        }).toList(),
-                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -328,7 +412,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 child: ElevatedButton(
                   onPressed: _submitData,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFB4E50D),
+                    backgroundColor: Theme.of(context).primaryColor,
                     foregroundColor: const Color(0xFF2D3436),
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -367,7 +451,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: isSelected ? const Color(0xFFB4E50D) : Colors.grey[300]!,
+              color: isSelected
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey[300]!,
             ),
           ),
           child: Center(
@@ -410,6 +496,21 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       case ExpenseCategory.gifts:
         return CupertinoIcons.gift_fill;
       case ExpenseCategory.other:
+        return CupertinoIcons.circle_grid_3x3_fill;
+    }
+  }
+
+  IconData _getIncomeCategoryIcon(IncomeCategory category) {
+    switch (category) {
+      case IncomeCategory.salary:
+        return CupertinoIcons.money_dollar_circle_fill;
+      case IncomeCategory.passive:
+        return CupertinoIcons.graph_circle_fill;
+      case IncomeCategory.gifts:
+        return CupertinoIcons.gift_fill;
+      case IncomeCategory.business:
+        return CupertinoIcons.briefcase_fill;
+      case IncomeCategory.other:
         return CupertinoIcons.circle_grid_3x3_fill;
     }
   }

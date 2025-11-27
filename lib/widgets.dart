@@ -109,7 +109,8 @@ class CustomBottomNavBar extends StatelessWidget {
             onPressed: () {
               // Already on Home
             },
-            icon: const Icon(CupertinoIcons.home, color: Color(0xFFB4E50D)),
+            icon: Icon(CupertinoIcons.home,
+                color: Theme.of(context).primaryColor),
           ),
           IconButton(
             onPressed: onAnalytics,
@@ -124,11 +125,11 @@ class CustomBottomNavBar extends StatelessWidget {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFB4E50D),
+                  color: Theme.of(context).primaryColor,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFB4E50D).withOpacity(0.4),
+                      color: Theme.of(context).primaryColor.withOpacity(0.4),
                       blurRadius: 15,
                       offset: const Offset(0, 8),
                     ),
@@ -181,7 +182,8 @@ class FilterTabs extends StatelessWidget {
               margin: const EdgeInsets.only(right: 12),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
-                color: isSelected ? const Color(0xFFB4E50D) : Colors.white,
+                color:
+                    isSelected ? Theme.of(context).primaryColor : Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   if (!isSelected)
@@ -244,7 +246,8 @@ class SummaryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildSummaryItem('Income', income, const Color(0xFFB4E50D)),
+                _buildSummaryItem(
+                    'Income', income, Theme.of(context).primaryColor),
                 const SizedBox(height: 24),
                 _buildSummaryItem('Spent', totalSpent, const Color(0xFFEF9A9A)),
               ],
@@ -259,7 +262,7 @@ class SummaryCard extends StatelessWidget {
                 centerSpaceRadius: 40,
                 sections: [
                   PieChartSectionData(
-                    color: const Color(0xFFB4E50D),
+                    color: Theme.of(context).primaryColor,
                     value: income,
                     radius: 20,
                     showTitle: false,
@@ -328,6 +331,22 @@ class ExpenseListItem extends StatelessWidget {
   });
 
   IconData _getCategoryIcon() {
+    if (expense.type == ExpenseType.income) {
+      switch (expense.incomeCategory) {
+        case IncomeCategory.salary:
+          return CupertinoIcons.money_dollar_circle_fill;
+        case IncomeCategory.passive:
+          return CupertinoIcons.graph_circle_fill;
+        case IncomeCategory.gifts:
+          return CupertinoIcons.gift_fill;
+        case IncomeCategory.business:
+          return CupertinoIcons.briefcase_fill;
+        case IncomeCategory.other:
+        case null:
+          return CupertinoIcons.circle_grid_3x3_fill;
+      }
+    }
+
     switch (expense.category) {
       case ExpenseCategory.food:
         return CupertinoIcons.cart_fill;
@@ -414,12 +433,16 @@ class ExpenseListItem extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF5F7FA),
+                  color: expense.type == ExpenseType.income
+                      ? const Color(0xFF4CD964).withOpacity(0.2)
+                      : const Color(0xFFF5F7FA),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(
                   _getCategoryIcon(),
-                  color: const Color(0xFFB4E50D),
+                  color: expense.type == ExpenseType.income
+                      ? const Color(0xFF4CD964)
+                      : Theme.of(context).primaryColor,
                   size: 24,
                 ),
               ),
@@ -448,11 +471,13 @@ class ExpenseListItem extends StatelessWidget {
                 ),
               ),
               Text(
-                settings.formatCurrency(expense.amount),
-                style: const TextStyle(
+                '${expense.type == ExpenseType.income ? '+' : ''}${settings.formatCurrency(expense.amount)}',
+                style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black,
+                  color: expense.type == ExpenseType.income
+                      ? const Color(0xFF4CD964)
+                      : Colors.black,
                   letterSpacing: -0.5,
                 ),
               ),
