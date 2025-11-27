@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import '../models.dart';
 import '../widgets.dart';
 import '../screens.dart';
@@ -147,22 +147,24 @@ class _ExpenseTrackerHomeState extends State<ExpenseTrackerHome> {
                       Row(
                         children: [
                           Container(
-                            width: 50,
-                            height: 50,
+                            width: 44,
+                            height: 44,
+                            padding: const EdgeInsets.all(2),
                             decoration: BoxDecoration(
-                              color: Colors.white,
                               shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 2,
+                              ),
                             ),
-                            padding: const EdgeInsets.all(8),
-                            child: SvgPicture.asset(
-                              widget.settings.getAvatarAsset(),
+                            child: ClipOval(
+                              child: Transform.scale(
+                                scale: 1.2,
+                                child: Image.asset(
+                                  widget.settings.getAvatarAsset(),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 16),

@@ -120,8 +120,8 @@ class UserSettings {
 
   String getAvatarAsset() {
     return gender == Gender.male
-        ? 'assets/avatars/male.svg'
-        : 'assets/avatars/female.svg';
+        ? 'assets/avatars/male.png'
+        : 'assets/avatars/female.png';
   }
 
   Color get primaryColor {
