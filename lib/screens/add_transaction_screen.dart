@@ -271,13 +271,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                       Container(
                                         padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFF4CD964)
+                                          color: Theme.of(context)
+                                              .primaryColor
                                               .withOpacity(0.2),
                                           shape: BoxShape.circle,
                                         ),
                                         child: Icon(
                                           _getIncomeCategoryIcon(category),
-                                          color: const Color(0xFF4CD964),
+                                          color: Theme.of(context).primaryColor,
                                           size: 16,
                                         ),
                                       ),
@@ -462,7 +463,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                color: isSelected ? const Color(0xFF007AFF) : Colors.grey[700],
+                color: isSelected
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey[700],
               ),
             ),
           ),

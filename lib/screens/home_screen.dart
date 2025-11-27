@@ -158,11 +158,13 @@ class _ExpenseTrackerHomeState extends State<ExpenseTrackerHome> {
                               ),
                             ),
                             child: ClipOval(
+                              clipBehavior: Clip.antiAlias,
                               child: Transform.scale(
                                 scale: 1.2,
                                 child: Image.asset(
                                   widget.settings.getAvatarAsset(),
                                   fit: BoxFit.cover,
+                                  filterQuality: FilterQuality.high,
                                 ),
                               ),
                             ),

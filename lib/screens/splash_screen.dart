@@ -18,28 +18,6 @@ class SplashScreen extends StatelessWidget {
           children: [
             const Spacer(),
             // Logo / Icon
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(40), // Softer corners
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context)
-                        .primaryColor
-                        .withOpacity(0.3), // Pastel Green Shadow
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: Icon(
-                CupertinoIcons.money_dollar,
-                size: 60,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
             const SizedBox(height: 40),
             // Title
             const Text(

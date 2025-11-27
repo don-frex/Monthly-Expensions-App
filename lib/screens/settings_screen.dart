@@ -122,6 +122,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   children: [
                     // Profile Section
+                    // Avatar Section
+                    Center(
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        margin: const EdgeInsets.only(bottom: 24, top: 8),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 4,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: ClipOval(
+                          clipBehavior: Clip.antiAlias,
+                          child: Transform.scale(
+                            scale: 1.2,
+                            child: Image.asset(
+                              _selectedGender == Gender.male
+                                  ? 'assets/avatars/male.png'
+                                  : 'assets/avatars/female.png',
+                              fit: BoxFit.cover,
+                              filterQuality: FilterQuality.high,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     const Padding(
                       padding: EdgeInsets.only(left: 8, bottom: 8),
                       child: Text(

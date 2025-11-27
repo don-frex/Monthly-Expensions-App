@@ -434,14 +434,14 @@ class ExpenseListItem extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: expense.type == ExpenseType.income
-                      ? const Color(0xFF4CD964).withOpacity(0.2)
+                      ? Theme.of(context).primaryColor.withOpacity(0.2)
                       : const Color(0xFFF5F7FA),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(
                   _getCategoryIcon(),
                   color: expense.type == ExpenseType.income
-                      ? const Color(0xFF4CD964)
+                      ? Theme.of(context).primaryColor
                       : Theme.of(context).primaryColor,
                   size: 24,
                 ),
@@ -476,7 +476,7 @@ class ExpenseListItem extends StatelessWidget {
                   fontSize: 17,
                   fontWeight: FontWeight.w600,
                   color: expense.type == ExpenseType.income
-                      ? const Color(0xFF4CD964)
+                      ? Theme.of(context).primaryColor
                       : Colors.black,
                   letterSpacing: -0.5,
                 ),
